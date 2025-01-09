@@ -58,7 +58,7 @@
             <input type="hidden" id="employeeIndex" />
             <div class="mb-3">
               <label for="employeeID" class="form-label">Employee ID</label>
-              <input type="text" class="form-control" id="employeeID" required />
+              <input type="text" class="form-control" id="employeeID" readonly />
             </div>
             <div class="mb-3">
               <label for="firstName" class="form-label">First Name</label>
@@ -99,7 +99,7 @@
     let employees = JSON.parse(localStorage.getItem('employees')) || [];
 
     document.getElementById('saveEmployee').addEventListener('click', () => {
-      const employeeID = document.getElementById('employeeID').value;
+      const employeeID = generateEmployeeID();
       const firstName = document.getElementById('firstName').value;
       const lastName = document.getElementById('lastName').value;
       const dob = document.getElementById('dob').value;
@@ -115,7 +115,7 @@
         employees.push({ employeeID, firstName, lastName, dob, age, address, employmentDate, lastDate });
       } else {
         // Update existing employee
-        employees[index] = { employeeID, firstName, lastName, dob, age, address, employmentDate, lastDate };
+        employees[index] = { employeeID: employees[index].employeeID, firstName, lastName, dob, age, address, employmentDate, lastDate };
       }
 
       saveToLocalStorage();
@@ -185,6 +185,10 @@
 
     function saveToLocalStorage() {
       localStorage.setItem('employees', JSON.stringify(employees));
+    }
+
+    function generateEmployeeID() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
     }
 
     // Initial render
