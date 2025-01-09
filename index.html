@@ -99,7 +99,7 @@
     let employees = JSON.parse(localStorage.getItem('employees')) || [];
 
     document.getElementById('saveEmployee').addEventListener('click', () => {
-      const employeeID = document.getElementById('employeeID').value || generateEmployeeID();
+      const employeeID = document.getElementById('employeeID').value;
       const firstName = document.getElementById('firstName').value;
       const lastName = document.getElementById('lastName').value;
       const dob = document.getElementById('dob').value;
@@ -111,9 +111,11 @@
       const index = document.getElementById('employeeIndex').value;
 
       if (index === "") {
+        // Add new employee
         employees.push({ employeeID, firstName, lastName, dob, age, address, employmentDate, lastDate });
       } else {
-        employees[index] = { employeeID: employees[index].employeeID, firstName, lastName, dob, age, address, employmentDate, lastDate };
+        // Update existing employee
+        employees[index] = { employeeID, firstName, lastName, dob, age, address, employmentDate, lastDate };
       }
 
       saveToLocalStorage();
@@ -137,8 +139,8 @@
           <td>${employee.employmentDate}</td>
           <td>${employee.lastDate || "N/A"}</td>
           <td>
-            <button class="btn btn-warning btn-sm" onclick="confirmAction('edit', ${index})">Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmAction('delete', ${index})">Delete</button>
+            <button class="btn btn-warning btn-sm" onclick="editEmployee(${index})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteEmployee(${index})">Delete</button>
           </td>
         </tr>`;
 
@@ -151,19 +153,6 @@
       const diff = Date.now() - birthDate.getTime();
       const age = new Date(diff).getUTCFullYear() - 1970;
       return age;
-    }
-
-    function confirmAction(action, index) {
-      const actionText = action === 'edit' ? 'edit this employee' : 'delete this employee';
-      const confirmation = confirm(`Are you sure you want to ${actionText}?`);
-
-      if (confirmation) {
-        if (action === 'edit') {
-          editEmployee(index);
-        } else if (action === 'delete') {
-          deleteEmployee(index);
-        }
-      }
     }
 
     function editEmployee(index) {
@@ -192,6 +181,7 @@
       document.getElementById('employeeForm').reset();
       document.getElementById('employeeIndex').value = '';
       document.getElementById('employeeModalLabel').textContent = 'Add Employee';
+      document.getElementById('employeeID').value = generateEmployeeID();
     }
 
     function saveToLocalStorage() {
@@ -199,10 +189,13 @@
     }
 
     function generateEmployeeID() {
-      return Math.floor(100000 + Math.random() * 900000).toString();
+      const lastID = employees.length > 0 ? parseInt(employees[employees.length - 1].employeeID) : 0;
+      const newID = (lastID + 1).toString().padStart(6, '0');
+      return newID;
     }
 
-    // Initial render
+    // Initial render and setup
+    document.getElementById('employeeID').value = generateEmployeeID();
     renderTable();
   </script>
 </body>
