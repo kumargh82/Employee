@@ -207,6 +207,17 @@
 
     document.getElementById('employeeID').value = generateEmployeeID();
     renderTable();
+    <!-- Add this Logout Button in the Employee Management Page -->
+<button class="btn btn-danger mb-3" onclick="logout()">Logout</button>
+
+<script>
+  function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+      window.location.href = 'index.html'; // Redirect to Login Page
+    }
+  }
+</script>
+
   </script>
 </body>
 </html>
